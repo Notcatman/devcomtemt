@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
@@ -8,13 +7,15 @@ from rest_framework.filters import SearchFilter
 from .paginations import Pagination
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from .trottles import Throttle
+from .permissions import Authoor
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [Authoor]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['title', 'author__name']
     search_fields = ['title', 'content']
@@ -37,3 +38,10 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name']
     pagination_class = Pagination
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    pass
+
+class CustomTokenRefreshView(TokenRefreshView):
+    pass
